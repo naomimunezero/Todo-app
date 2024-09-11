@@ -5,9 +5,14 @@ import 'package:todolist/constants/colors.dart'; // Make sure to import your col
 import 'package:todolist/model/todo.dart';
 import 'package:todolist/widget/todo_item.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
    Home({Key? key}) : super(key: key);
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final todosList = ToDo.todoList();
 
   @override
@@ -31,7 +36,10 @@ class Home extends StatelessWidget {
                     ),
           
                     for (ToDo todoo in todosList)
-                      TodoItem(todo: todoo,),
+                      TodoItem(todo: todoo,
+                      onToDoChanged: _handleToDoChange,
+                      onDeleteItem: () {},
+                      ),
           
                   ],
                 )
@@ -58,14 +66,31 @@ class Home extends StatelessWidget {
                   border: InputBorder.none
                 )
               )
-              ))
+              )),
+            
+              Container(
+                margin: EdgeInsets.only(bottom: 20, right: 20,),
+                child: ElevatedButton(child: Text("+", style: TextStyle(fontSize: 40),),
+                onPressed:() {},
+                style: ElevatedButton.styleFrom(
+                  iconColor: tdBlue,
+                  minimumSize: Size(60, 60),
+                  elevation: 10,
+                  ),),
+              )
             ],),
           )
         ],
       ),
     );
   }
-
+  
+  void _handleToDoChange(ToDo todo) {
+    setState(() {
+      todo.isDone = !todo.isDone;
+    });
+  }
+ 
   Widget searchBox(){
     return  Container(
               padding: EdgeInsets.symmetric(horizontal: 15),
@@ -85,7 +110,6 @@ class Home extends StatelessWidget {
               ),
             );
   }
-
 
   AppBar _buildAppBar() {
     return AppBar(
