@@ -1,3 +1,4 @@
+//import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -14,6 +15,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final todosList = ToDo.todoList();
+  final _todoContoller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +39,8 @@ class _HomeState extends State<Home> {
           
                     for (ToDo todoo in todosList)
                       TodoItem(todo: todoo,
-                      onToDoChanged: _handleToDoChange,
-                      onDeleteItem: () {},
+                        onToDoChanged: _handleToDoChange,
+                        onDeleteItem: _deleteToDoItem,
                       ),
           
                   ],
@@ -61,6 +63,7 @@ class _HomeState extends State<Home> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child:TextField(
+                controller: _todoContoller,
                 decoration: InputDecoration(
                   hintText: "Add new ToDo item",
                   border: InputBorder.none
@@ -71,7 +74,9 @@ class _HomeState extends State<Home> {
               Container(
                 margin: EdgeInsets.only(bottom: 20, right: 20,),
                 child: ElevatedButton(child: Text("+", style: TextStyle(fontSize: 40),),
-                onPressed:() {},
+                onPressed:() {
+                  _addToDoItem(_todoContoller.text);
+                },
                 style: ElevatedButton.styleFrom(
                   iconColor: tdBlue,
                   minimumSize: Size(60, 60),
@@ -90,7 +95,18 @@ class _HomeState extends State<Home> {
       todo.isDone = !todo.isDone;
     });
   }
- 
+  void _deleteToDoItem(String id){
+    setState(() {
+      todosList.removeWhere((item) => item.id == id);
+    });
+  }
+  void _addToDoItem(String toDo){
+    setState(() {
+      todosList.add(ToDo(id: DateTime.now().millisecondsSinceEpoch.toString(), todoText: toDo));
+    });
+    _todoContoller.clear();
+  }
+
   Widget searchBox(){
     return  Container(
               padding: EdgeInsets.symmetric(horizontal: 15),
